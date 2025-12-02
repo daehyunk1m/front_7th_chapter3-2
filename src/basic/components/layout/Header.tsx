@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { CartItem } from "../../../types";
 import { CartIcon } from "../icons";
+import { SearchBox } from "../search";
 
 interface HeaderProps {
   isAdmin: boolean;
+  setIsAdmin: (value: boolean) => void;
   searchTerm: string;
   setSearchTerm: (value: string) => void;
-  setIsAdmin: (value: boolean) => void;
   cart: CartItem[];
 }
 
@@ -25,17 +26,7 @@ export const Header = ({ isAdmin, searchTerm, setSearchTerm, setIsAdmin, cart }:
           <div className='flex items-center flex-1'>
             <h1 className='text-xl font-semibold text-gray-800'>SHOP</h1>
             {/* 검색창 - 안티패턴: 검색 로직이 컴포넌트에 직접 포함 */}
-            {!isAdmin && (
-              <div className='ml-8 flex-1 max-w-md'>
-                <input
-                  type='text'
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder='상품 검색...'
-                  className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500'
-                />
-              </div>
-            )}
+            {!isAdmin && <SearchBox searchTerm={searchTerm} setSearchTerm={setSearchTerm} />}
           </div>
           <nav className='flex items-center space-x-4'>
             <button

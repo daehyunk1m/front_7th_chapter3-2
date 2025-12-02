@@ -3,7 +3,8 @@
 /**가격을 한국 원화 형식으로 포맷*/
 export const formatPrice = (
   price: number | string,
-  { useSymbol = false }: { useSymbol?: boolean } = {}
+  unit: "₩" | "원" = "원",
+  locale: "ko-KR" | "en-US" = "ko-KR"
 ): string => {
   let formattedPrice = price;
 
@@ -11,9 +12,9 @@ export const formatPrice = (
     formattedPrice = Number(price);
   }
 
-  return useSymbol
-    ? `₩${formattedPrice.toLocaleString("ko-KR")}`
-    : formattedPrice.toLocaleString("ko-KR");
+  return unit === "₩"
+    ? `₩${formattedPrice.toLocaleString(locale)}`
+    : `${formattedPrice.toLocaleString(locale)}원`;
 };
 /**날짜를 YYYY-MM-DD 형식으로 포맷*/
 export const formatDate = (date: Date): string => {

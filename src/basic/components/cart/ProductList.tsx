@@ -1,6 +1,22 @@
+import { useCallback } from "react";
 import { Product } from "../../../types";
+import { getRemainingStock } from "../../models/cart";
+import { formatPrice } from "../../utils/formatters";
 
 export const ProductList = ({ filteredProducts }: { filteredProducts: Product[] }) => {
+  const productPrice = useCallback(
+    (price: number, productId?: string) => {
+      if (productId) {
+        const product = filteredProducts.find((p) => p.id === productId);
+        // if (product && getRemainingStock(product) <= 0) {
+        //   return "SOLD OUT";
+        // }
+      }
+      return formatPrice(price, "₩");
+    },
+    [filteredProducts]
+  );
+
   return (
     <section>
       <div className='mb-6 flex justify-between items-center'>
@@ -48,7 +64,7 @@ export const ProductList = ({ filteredProducts }: { filteredProducts: Product[] 
                   {/* 가격 정보 */}
                   <div className='mb-3'>
                     <p className='text-lg font-bold text-gray-900'>
-                      {formatPrice(product.price, product.id)}
+                      {productPrice(product.price, product.id)}
                     </p>
                     {product.discounts.length > 0 && (
                       <p className='text-xs text-gray-500'>

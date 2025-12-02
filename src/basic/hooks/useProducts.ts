@@ -5,14 +5,117 @@
 // 3. 재고 업데이트
 // 4. 할인 규칙 추가/삭제
 //
-// 반환할 값:
-// - products: 상품 배열
-// - updateProduct: 상품 정보 수정
-// - addProduct: 새 상품 추가
-// - updateProductStock: 재고 수정
-// - addProductDiscount: 할인 규칙 추가
-// - removeProductDiscount: 할인 규칙 삭제
 
-export function useProducts() {
-  // TODO: 구현
+import { Product } from "../../types";
+import { useCallback, useState } from "react";
+
+export interface ProductWithUI extends Product {
+  description?: string;
+  isRecommended?: boolean;
 }
+
+export const useProducts = () => {
+  /**상품 배열 */
+  const [products, setProducts] = useState<ProductWithUI[]>(() => {
+    const saved = localStorage.getItem("products");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return initialProducts;
+      }
+    }
+    return initialProducts;
+  });
+
+  /**상품 정보 수정 */
+  const updateProduct = useCallback(
+    (productId: string, updates: Partial<ProductWithUI>) => {
+      setProducts((prev) =>
+        prev.map((product) => (product.id === productId ? { ...product, ...updates } : product))
+      );
+      addNotification("상품이 수정되었습니다.", "success");
+    },
+    [addNotification]
+  );
+
+  /**새 상품 추가 */
+  const addProduct = useCallback(
+    (newProduct: Omit<ProductWithUI, "id">) => {
+      const product: ProductWithUI = {
+        ...newProduct,
+        id: `p${Date.now()}`,
+      };
+      setProducts((prev) => [...prev, product]);
+      addNotification("상품이 추가되었습니다.", "success");
+    },
+    [addNotification]
+  );
+
+  /**재고 수정 */
+  const updateProductStock = () => {
+    return;
+  };
+
+  const deleteProduct = useCallback(
+    (productId: string) => {
+      setProducts((prev) => prev.filter((p) => p.id !== productId));
+      addNotification("상품이 삭제되었습니다.", "success");
+    },
+    [addNotification]
+  );
+
+  /**할인 규칙 추가 */
+  const addProductDiscount = () => {
+    return;
+  };
+
+  /**할인 규칙 삭제 */
+  const removeProductDiscount = () => {
+    return;
+  };
+
+  return {
+    products,
+    updateProduct,
+    addProduct,
+    updateProductStock,
+    addProductDiscount,
+    removeProductDiscount,
+  };
+};
+
+// 초기 데이터
+const initialProducts: ProductWithUI[] = [
+  {
+    id: "p1",
+    name: "상품1",
+    price: 10000,
+    stock: 20,
+    discounts: [
+      { quantity: 10, rate: 0.1 },
+      { quantity: 20, rate: 0.2 },
+    ],
+    description: "최고급 품질의 프리미엄 상품입니다.",
+  },
+  {
+    id: "p2",
+    name: "상품2",
+    price: 20000,
+    stock: 20,
+    discounts: [{ quantity: 10, rate: 0.15 }],
+    description: "다양한 기능을 갖춘 실용적인 상품입니다.",
+    isRecommended: true,
+  },
+  {
+    id: "p3",
+    name: "상품3",
+    price: 30000,
+    stock: 20,
+    discounts: [
+      { quantity: 10, rate: 0.2 },
+      { quantity: 30, rate: 0.25 },
+    ],
+    description: "대용량과 고성능을 자랑하는 상품입니다.",
+  },
+];

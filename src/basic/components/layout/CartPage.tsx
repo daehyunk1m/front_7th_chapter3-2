@@ -19,14 +19,12 @@
 import { CartItem, Coupon, Product } from "../../../types";
 import { XIcon, BagIcon, ProductIcon } from "../icons";
 import { ProductList } from "../cart/ProductList";
-import { useEffect } from "react";
 
 interface CartPageProps {
   products: Product[];
   filteredProducts: Product[];
   debouncedSearchTerm: string;
   getRemainingStock: (product: Product) => number;
-  formatPrice: (price: number, productId?: string) => string;
   addToCart: (product: Product) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
@@ -41,7 +39,7 @@ interface CartPageProps {
   selectedCoupon: Coupon | null;
   setSelectedCoupon: (coupon: Coupon | null) => void;
   coupons: Coupon[];
-  totals: { totalBeforeDiscount: number; totalAfterDiscount: number };
+
   completeOrder: () => void;
 }
 
@@ -49,7 +47,6 @@ export function CartPage({
   products,
   debouncedSearchTerm,
   getRemainingStock,
-  formatPrice,
   addToCart,
   removeFromCart,
   updateQuantity,
@@ -58,6 +55,7 @@ export function CartPage({
   calculateTotal,
   clearCart,
 }: CartPageProps) {
+  const totals = calculateCartTotal(cart, selectedCoupon);
   const useCart = useCart();
   const filteredProducts = debouncedSearchTerm
     ? products.filter(
@@ -76,7 +74,6 @@ export function CartPage({
           filteredProducts={filteredProducts}
           debouncedSearchTerm={debouncedSearchTerm}
           getRemainingStock={getRemainingStock}
-          formatPrice={formatPrice}
           addToCart={addToCart}
         />
       </div>

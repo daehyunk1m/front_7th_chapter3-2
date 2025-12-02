@@ -15,10 +15,11 @@
 // - CouponForm: 새 쿠폰 추가 폼
 // - CouponList: 쿠폰 목록 표시
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Coupon, Product } from "../../../types";
 import { ProductWithUI } from "../../App";
 import { PlusIcon, TrashIcon, XIcon } from "../icons";
+import { formatPrice } from "../../utils/formatters";
 interface ProductForm {
   name: string;
   price: number;
@@ -36,7 +37,9 @@ interface AdminPageProps {
   setShowProductForm: (show: boolean) => void;
 }
 
-export function AdminPage({ products, coupons, setShowProductForm }: AdminPageProps) {
+export function AdminPage({ products, coupons }: AdminPageProps) {
+  const [showProductForm, setShowProductForm] = useState(false);
+  const [showCouponForm, setShowCouponForm] = useState(false);
   // Admin
   const [editingProduct, setEditingProduct] = useState<string | null>(null);
   const [productForm, setProductForm] = useState({
@@ -55,6 +58,59 @@ export function AdminPage({ products, coupons, setShowProductForm }: AdminPagePr
   });
 
   const [activeTab, setActiveTab] = useState<"products" | "coupons">("products");
+
+  const productPrice = useCallback(
+    (price: number, productId?: string) => {
+      if (productId) {
+        const product = products.find((p) => p.id === productId);
+        // if (product && getRemainingStock(product) <= 0) {
+        //   return "SOLD OUT";
+        // }
+      }
+      return formatPrice(price, "₩");
+    },
+    [products]
+  );
+
+  const startEditProduct = (product: ProductWithUI) => {
+    setEditingProduct(product.id);
+    setProductForm({
+      name: product.name,
+      price: product.price,
+      stock: product.stock,
+      description: product.description || "",
+      discounts: product.discounts || [],
+    });
+    setShowProductForm(true);
+  };
+
+  const handleCouponSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    addCoupon(couponForm);
+    setCouponForm({
+      name: "",
+      code: "",
+      discountType: "amount",
+      discountValue: 0,
+    });
+    setShowCouponForm(false);
+  };
+
+  const handleProductSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingProduct && editingProduct !== "new") {
+      updateProduct(editingProduct, productForm);
+      setEditingProduct(null);
+    } else {
+      addProduct({
+        ...productForm,
+        discounts: productForm.discounts,
+      });
+    }
+    setProductForm({ name: "", price: 0, stock: 0, description: "", discounts: [] });
+    setEditingProduct(null);
+    setShowProductForm(false);
+  };
 
   return (
     <div className='max-w-6xl mx-auto'>
@@ -139,7 +195,7 @@ export function AdminPage({ products, coupons, setShowProductForm }: AdminPagePr
                       {product.name}
                     </td>
                     <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
-                      {formatPrice(product.price, product.id)}
+                      {productPrice(product.price, product.id)}
                     </td>
                     <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
                       <span

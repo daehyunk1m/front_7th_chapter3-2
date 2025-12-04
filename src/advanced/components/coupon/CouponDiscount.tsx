@@ -1,15 +1,16 @@
 import { formatPrice } from "../../utils/formatters";
 import type { Coupon } from "../../../types";
+import { useAtomValue } from "jotai";
+import { couponsAtom, selectedCouponAtom } from "../../stores/atoms/couponAtoms";
 
 export const CouponDiscount = ({
-  coupons,
-  selectedCoupon,
   handleApplyCoupon,
 }: {
-  coupons: Coupon[];
-  selectedCoupon: Coupon | null;
   handleApplyCoupon: (e: React.ChangeEvent<HTMLSelectElement>, coupons: Coupon[]) => void;
 }) => {
+  const coupons = useAtomValue(couponsAtom);
+  const selectedCoupon = useAtomValue(selectedCouponAtom);
+
   return (
     <section className='bg-white rounded-lg border border-gray-200 p-4'>
       <div className='flex items-center justify-between mb-3'>

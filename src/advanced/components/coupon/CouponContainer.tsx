@@ -1,17 +1,11 @@
-import { Coupon } from "../../../types";
+import { useSetAtom } from "jotai";
 import { TrashIcon } from "../icons";
+import { deleteCouponAtom } from "../../stores/atoms/couponAtoms";
+import type { Coupon } from "../../../types";
 
-export const CouponContainer = ({
-  coupon,
-  deleteCoupon,
-}: // selectedCoupon,
-// setSelectedCoupon,
-{
-  coupon: Coupon;
-  deleteCoupon: (couponCode: string) => void;
-  // selectedCoupon: Coupon | null;
-  // setSelectedCoupon: (coupon: Coupon | null) => void;
-}) => {
+export const CouponContainer = ({ coupon }: { coupon: Coupon }) => {
+  const deleteCoupon = useSetAtom(deleteCouponAtom);
+
   return (
     <div className='relative bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-4 border border-indigo-200'>
       <div className='flex justify-between items-start'>

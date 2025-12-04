@@ -1,31 +1,26 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { useSetAtom } from "jotai";
 import { CouponList, CouponForm } from "../coupon";
+import { addCouponAtom } from "../../stores/atoms/couponAtoms";
 
+import type { FormEvent } from "react";
 import type { Coupon } from "../../../types";
 
-export const ManagementCoupon = ({
-  coupons,
-  addCoupon,
-  deleteCoupon,
-}: // selectedCoupon,
-// setSelectedCoupon,
-{
-  coupons: Coupon[];
-  addCoupon: (newCoupon: Omit<Coupon, "id">) => void;
-  deleteCoupon: (couponCode: string) => void;
-  // selectedCoupon: Coupon | null;
-  // setSelectedCoupon: (coupon: Coupon | null) => void;
-}) => {
+export const ManagementCoupon = () => {
   const [show, setShow] = useState(false);
-
   const [couponForm, setCouponForm] = useState<Omit<Coupon, "id">>(couponFormInit);
 
-  const handleCouponSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    addCoupon(couponForm);
-    setCouponForm(couponFormInit);
-    setShow(false);
-  };
+  const addCoupon = useSetAtom(addCouponAtom);
+
+  const handleCouponSubmit = useCallback(
+    (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      addCoupon(couponForm);
+      setCouponForm(couponFormInit);
+      setShow(false);
+    },
+    [couponForm, addCoupon, setCouponForm, setShow]
+  );
 
   return (
     <section className='bg-white rounded-lg border border-gray-200'>
@@ -33,13 +28,7 @@ export const ManagementCoupon = ({
         <h2 className='text-lg font-semibold'>쿠폰 관리</h2>
       </div>
       <div className='p-6'>
-        <CouponList
-          coupons={coupons}
-          deleteCoupon={deleteCoupon}
-          setShow={setShow}
-          // selectedCoupon={selectedCoupon}
-          // setSelectedCoupon={setSelectedCoupon}
-        />
+        <CouponList setShow={setShow} />
         {show && (
           <CouponForm
             form={couponForm}

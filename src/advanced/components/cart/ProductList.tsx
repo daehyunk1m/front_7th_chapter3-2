@@ -1,30 +1,37 @@
 import { useCallback } from "react";
 import { formatPrice } from "../../utils/formatters";
-import { ProductWithUI } from "../../hooks/useProducts";
 import { ProductItem } from "./ProductItem";
+import { useAtomValue } from "jotai";
+import { debouncedSearchTermAtom } from "../../stores/atoms/uiAtoms";
+import { getRemainingStock } from "../../models/cart";
+import { cartAtom } from "../../stores/atoms/cartAtoms";
+import { productAtom } from "../../stores/atoms/productAtoms";
 
-export const ProductList = ({
-  filteredProducts,
-  searchTerm,
-  remainingStock,
-  addToCart,
-}: {
-  filteredProducts: ProductWithUI[];
-  searchTerm: string;
-  remainingStock: (product: ProductWithUI) => number;
-  addToCart: (product: ProductWithUI) => void;
-}) => {
+export const ProductList = () => {
+  const cart = useAtomValue(cartAtom);
+  const products = useAtomValue(productAtom);
+  const searchTerm = useAtomValue(debouncedSearchTermAtom);
+
+  const filteredProducts = searchTerm
+    ? products.filter(
+        (product) =>
+          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (product.description &&
+            product.description.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+    : products;
+
   const productPrice = useCallback(
     (price: number, productId?: string) => {
       if (productId) {
         const product = filteredProducts.find((p) => p.id === productId);
-        if (product && remainingStock(product) <= 0) {
+        if (product && getRemainingStock(product, cart) <= 0) {
           return "SOLD OUT";
         }
       }
       return formatPrice(price, "₩");
     },
-    [filteredProducts]
+    [filteredProducts, cart]
   );
 
   return (
@@ -43,9 +50,8 @@ export const ProductList = ({
             <ProductItem
               key={product.id}
               product={product}
-              stock={remainingStock(product)}
+              stock={getRemainingStock(product, cart)}
               productPrice={productPrice}
-              addToCart={addToCart}
             />
           ))}
         </div>

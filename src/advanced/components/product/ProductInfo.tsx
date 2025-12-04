@@ -1,16 +1,18 @@
+import { useSetAtom } from "jotai";
 import type { ProductWithUI } from "../../hooks/useProducts";
+import { deleteProductAtom } from "../../stores/atoms/productAtoms";
 
 export const ProductInfo = ({
   product,
   productPrice,
   handleEditProduct,
-  deleteProduct,
 }: {
   product: ProductWithUI;
   productPrice: (price: number, productId?: string) => string;
   handleEditProduct: (product: ProductWithUI) => void;
-  deleteProduct: (productId: string) => void;
 }) => {
+  const deleteProduct = useSetAtom(deleteProductAtom);
+
   return (
     <tr key={product.id} className='hover:bg-gray-50'>
       <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>

@@ -1,17 +1,19 @@
 import { ProductIcon } from "../icons";
 import { ProductWithUI } from "../../hooks/useProducts";
+import { addToCartAtom } from "../../stores/atoms/cartAtoms";
+import { useSetAtom } from "jotai";
 
 export const ProductItem = ({
   product,
   productPrice,
   stock,
-  addToCart,
 }: {
   product: ProductWithUI;
   productPrice: (price: number, productId?: string) => string;
   stock: number;
-  addToCart: (product: ProductWithUI) => void;
 }) => {
+  const addToCart = useSetAtom(addToCartAtom);
+
   return (
     <div className='bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow'>
       {/* 상품 이미지 영역 (placeholder) */}

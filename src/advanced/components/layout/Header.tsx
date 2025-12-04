@@ -1,14 +1,13 @@
 import { PropsWithChildren, useEffect, useState } from "react";
-import { CartItem } from "../../../types";
 import { CartIcon } from "../icons";
+import { isAdminAtom } from "../../stores/atoms/uiAtoms";
+import { useAtom, useAtomValue } from "jotai";
+import { cartAtom } from "../../stores/atoms/cartAtoms";
 
-interface HeaderProps {
-  isAdmin: boolean;
-  setIsAdmin: (value: boolean) => void;
-  cart: CartItem[];
-}
+export const Header = ({ children }: PropsWithChildren) => {
+  const cart = useAtomValue(cartAtom);
 
-export const Header = ({ isAdmin, setIsAdmin, cart, children }: PropsWithChildren<HeaderProps>) => {
+  const [isAdmin, setIsAdmin] = useAtom(isAdminAtom);
   const [totalItemCount, setTotalItemCount] = useState(0);
 
   useEffect(() => {

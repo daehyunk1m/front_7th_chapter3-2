@@ -1,18 +1,12 @@
 import { XIcon } from "../icons";
 import { formatPrice } from "../../utils/formatters";
 import type { CartItem } from "../../../types";
+import { removeFromCartAtom, updateQuantityAtom } from "../../stores/atoms/cartAtoms";
+import { useSetAtom } from "jotai";
 
-export const CartStockItem = ({
-  item,
-  itemTotal,
-  removeFromCart,
-  updateQuantity,
-}: {
-  item: CartItem;
-  itemTotal: number;
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
-}) => {
+export const CartStockItem = ({ item, itemTotal }: { item: CartItem; itemTotal: number }) => {
+  const removeFromCart = useSetAtom(removeFromCartAtom);
+  const updateQuantity = useSetAtom(updateQuantityAtom);
   const originalPrice = item.product.price * item.quantity;
   const hasDiscount = itemTotal < originalPrice;
   const discountRate = hasDiscount ? Math.round((1 - itemTotal / originalPrice) * 100) : 0;
@@ -31,14 +25,18 @@ export const CartStockItem = ({
       <div className='flex items-center justify-between'>
         <div className='flex items-center'>
           <button
-            onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+            onClick={() =>
+              updateQuantity({ productId: item.product.id, newQuantity: item.quantity - 1 })
+            }
             className='w-6 h-6 rounded border border-gray-300 flex items-center justify-center hover:bg-gray-100'
           >
             <span className='text-xs'>−</span>
           </button>
           <span className='mx-3 text-sm font-medium w-8 text-center'>{item.quantity}</span>
           <button
-            onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+            onClick={() =>
+              updateQuantity({ productId: item.product.id, newQuantity: item.quantity + 1 })
+            }
             className='w-6 h-6 rounded border border-gray-300 flex items-center justify-center hover:bg-gray-100'
           >
             <span className='text-xs'>+</span>

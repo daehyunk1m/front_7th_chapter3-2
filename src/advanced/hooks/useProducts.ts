@@ -20,32 +20,41 @@ export const useProducts = () => {
   const [products, setProducts] = useLocalStorage<ProductWithUI[]>("products", initialProducts);
 
   /**상품 정보 수정 */
-  const updateProduct = useCallback((productId: string, updates: Partial<ProductWithUI>) => {
-    setProducts((prev) =>
-      prev.map((product) => (product.id === productId ? { ...product, ...updates } : product))
-    );
-    toast.success("상품이 수정되었습니다.");
-  }, [setProducts]);
+  const updateProduct = useCallback(
+    (productId: string, updates: Partial<ProductWithUI>) => {
+      setProducts((prev) =>
+        prev.map((product) => (product.id === productId ? { ...product, ...updates } : product))
+      );
+      toast.success("상품이 수정되었습니다.");
+    },
+    [setProducts]
+  );
 
   /**새 상품 추가 */
-  const addProduct = useCallback((newProduct: Omit<ProductWithUI, "id">) => {
-    const product: ProductWithUI = {
-      ...newProduct,
-      id: `p${Date.now()}`,
-    };
-    setProducts((prev) => [...prev, product]);
-    toast.success("상품이 추가되었습니다.");
-  }, [setProducts]);
+  const addProduct = useCallback(
+    (newProduct: Omit<ProductWithUI, "id">) => {
+      const product: ProductWithUI = {
+        ...newProduct,
+        id: `p${Date.now()}`,
+      };
+      setProducts((prev) => [...prev, product]);
+      toast.success("상품이 추가되었습니다.");
+    },
+    [setProducts]
+  );
 
   /**재고 수정 */
   const updateProductStock = () => {
     return;
   };
 
-  const deleteProduct = useCallback((productId: string) => {
-    setProducts((prev) => prev.filter((p) => p.id !== productId));
-    toast.success("상품이 삭제되었습니다.");
-  }, [setProducts]);
+  const deleteProduct = useCallback(
+    (productId: string) => {
+      setProducts((prev) => prev.filter((p) => p.id !== productId));
+      toast.success("상품이 삭제되었습니다.");
+    },
+    [setProducts]
+  );
 
   /**할인 규칙 추가 */
   const addProductDiscount = () => {

@@ -2,23 +2,24 @@ import { useCallback } from "react";
 import { formatPrice } from "../../utils/formatters";
 import type { ProductWithUI } from "../../hooks/useProducts";
 import { ProductInfo } from "./ProductInfo";
+import { productAtom } from "../../stores/atoms/productAtoms";
+import { useAtomValue } from "jotai";
+import { cartAtom } from "../../stores/atoms/cartAtoms";
+import { getRemainingStock } from "../../models/cart";
 
 //상품 정보 표시 및 수정
 export const ProductAccordion = ({
-  products,
-  deleteProduct,
   setEditingProduct,
   setProductForm,
   setShow,
-  remainingStock,
 }: {
-  products: ProductWithUI[];
-  deleteProduct: (productId: string) => void;
   setEditingProduct: (productId: string) => void;
   setProductForm: (productForm: Omit<ProductWithUI, "id">) => void;
   setShow: (show: boolean) => void;
-  remainingStock: (product: ProductWithUI) => number;
 }) => {
+  const products = useAtomValue(productAtom);
+  const cart = useAtomValue(cartAtom);
+
   const handleEditProduct = (product: ProductWithUI) => {
     setEditingProduct(product.id);
     setProductForm({
@@ -35,14 +36,13 @@ export const ProductAccordion = ({
     (price: number, productId?: string) => {
       if (productId) {
         const product = products.find((p) => p.id === productId);
-        if (product && remainingStock(product) <= 0) {
+        if (product && getRemainingStock(product, cart) <= 0) {
           return "SOLD OUT";
         }
       }
-      // return formatPrice(price, "₩");
       return formatPrice(price);
     },
-    [products, remainingStock]
+    [products, cart]
   );
 
   return (
@@ -74,7 +74,6 @@ export const ProductAccordion = ({
               product={product}
               productPrice={productPrice}
               handleEditProduct={handleEditProduct}
-              deleteProduct={deleteProduct}
             />
           ))}
         </tbody>

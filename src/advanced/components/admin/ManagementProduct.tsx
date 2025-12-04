@@ -1,20 +1,10 @@
 import { useCallback, useState } from "react";
 import { ProductForm, ProductAccordion } from "../product";
 import type { ProductWithUI } from "../../hooks/useProducts";
+import { addProductAtom, updateProductAtom } from "../../stores/atoms/productAtoms";
+import { useSetAtom } from "jotai";
 
-export const ManagementProduct = ({
-  products,
-  addProduct,
-  updateProduct,
-  deleteProduct,
-  remainingStock,
-}: {
-  products: ProductWithUI[];
-  addProduct: (newProduct: Omit<ProductWithUI, "id">) => void;
-  updateProduct: (productId: string, updates: Partial<ProductWithUI>) => void;
-  deleteProduct: (productId: string) => void;
-  remainingStock: (product: ProductWithUI) => number;
-}) => {
+export const ManagementProduct = () => {
   const [show, setShow] = useState(false);
 
   const [productForm, setProductForm] = useState<Omit<ProductWithUI, "id">>(productFormInit);
@@ -27,11 +17,14 @@ export const ManagementProduct = ({
     setShow(false);
   }, [setProductForm, setEditingProduct, setShow]);
 
+  const updateProduct = useSetAtom(updateProductAtom);
+  const addProduct = useSetAtom(addProductAtom);
+
   const handleProductSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
       if (editingProduct && editingProduct !== "new") {
-        updateProduct(editingProduct, productForm);
+        updateProduct({ productId: editingProduct, updates: productForm });
         setEditingProduct(null);
       } else {
         addProduct({
@@ -63,12 +56,9 @@ export const ManagementProduct = ({
       </div>
 
       <ProductAccordion
-        products={products}
-        deleteProduct={deleteProduct}
         setEditingProduct={setEditingProduct}
         setProductForm={setProductForm}
         setShow={setShow}
-        remainingStock={remainingStock}
       />
       {show && (
         <ProductForm

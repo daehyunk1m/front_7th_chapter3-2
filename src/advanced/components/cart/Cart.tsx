@@ -2,33 +2,17 @@ import { BagIcon } from "../icons";
 import { CouponDiscount } from "../coupon/CouponDiscount";
 import { PaymentContainer } from "../payment/PaymentContainer";
 import { CartStockItem } from "./CartStockItem";
-import type { CartItem, Coupon } from "../../../types";
+import { selectedCouponAtom } from "../../stores/atoms/couponAtoms";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { applyCouponAtom, cartAtom } from "../../stores/atoms/cartAtoms";
+import { calculateItemTotal } from "../../models/cart";
+import type { Coupon } from "../../../types";
 
-interface CartProps {
-  cart: CartItem[];
-  coupons: Coupon[];
-  selectedCoupon: Coupon | null;
-  setSelectedCoupon: (coupon: Coupon | null) => void;
-  applyCoupon: (coupon: Coupon) => void;
-  calcItemTotal: (item: CartItem) => number;
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
-  totals: { totalBeforeDiscount: number; totalAfterDiscount: number };
-  completeOrder: () => void;
-}
+export const Cart = () => {
+  const cart = useAtomValue(cartAtom);
+  const applyCoupon = useSetAtom(applyCouponAtom);
+  const [, setSelectedCoupon] = useAtom(selectedCouponAtom);
 
-export const Cart = ({
-  cart,
-  coupons,
-  selectedCoupon,
-  setSelectedCoupon,
-  applyCoupon,
-  calcItemTotal,
-  removeFromCart,
-  updateQuantity,
-  totals,
-  completeOrder,
-}: CartProps) => {
   const handleApplyCoupon = (e: React.ChangeEvent<HTMLSelectElement>, coupons: Coupon[]) => {
     const coupon = coupons.find((c) => c.code === e.target.value);
     if (coupon) applyCoupon(coupon);
@@ -50,16 +34,8 @@ export const Cart = ({
         ) : (
           <div className='space-y-3'>
             {cart.map((item) => {
-              const itemTotal = calcItemTotal(item);
-              return (
-                <CartStockItem
-                  key={item.product.id}
-                  item={item}
-                  itemTotal={itemTotal}
-                  removeFromCart={removeFromCart}
-                  updateQuantity={updateQuantity}
-                />
-              );
+              const itemTotal = calculateItemTotal(item, cart);
+              return <CartStockItem key={item.product.id} item={item} itemTotal={itemTotal} />;
             })}
           </div>
         )}
@@ -67,12 +43,8 @@ export const Cart = ({
 
       {cart.length > 0 && (
         <>
-          <CouponDiscount
-            coupons={coupons}
-            selectedCoupon={selectedCoupon}
-            handleApplyCoupon={handleApplyCoupon}
-          />
-          <PaymentContainer totals={totals} completeOrder={completeOrder} />
+          <CouponDiscount handleApplyCoupon={handleApplyCoupon} />
+          <PaymentContainer />
         </>
       )}
     </div>

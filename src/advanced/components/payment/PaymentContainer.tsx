@@ -1,12 +1,12 @@
 import { formatPrice } from "../../utils/formatters";
+import { useAtomValue, useSetAtom } from "jotai";
+import { totalsAtom } from "../../stores/atoms/cartAtoms";
+import { completeOrderAtom } from "../../stores/atoms/cartAtoms";
 
-export const PaymentContainer = ({
-  totals,
-  completeOrder,
-}: {
-  totals: { totalBeforeDiscount: number; totalAfterDiscount: number };
-  completeOrder: () => void;
-}) => {
+export const PaymentContainer = () => {
+  const totals = useAtomValue(totalsAtom);
+  const completeOrder = useSetAtom(completeOrderAtom);
+
   return (
     <section className='bg-white rounded-lg border border-gray-200 p-4'>
       <h3 className='text-lg font-semibold mb-4'>결제 정보</h3>

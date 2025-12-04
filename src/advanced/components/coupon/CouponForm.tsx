@@ -1,5 +1,6 @@
-import type { Coupon } from "../../../types";
 import { toast } from "../../utils/toast";
+import type { FormEvent } from "react";
+import type { Coupon } from "../../../types";
 
 // 새 쿠폰 추가 폼
 export const CouponForm = ({
@@ -11,7 +12,7 @@ export const CouponForm = ({
   form: Coupon;
   setForm: (form: Coupon) => void;
   setShow: (show: boolean) => void;
-  handleCouponSubmit: (e: React.FormEvent) => void;
+  handleCouponSubmit: (e: FormEvent<HTMLFormElement>) => void;
 }) => {
   return (
     <div className='mt-6 p-4 bg-gray-50 rounded-lg'>

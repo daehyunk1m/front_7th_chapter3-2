@@ -29,7 +29,8 @@ export function useLocalStorage<T>(
 
   const set = useCallback(
     (newValue: T | ((val: T) => T)) => {
-      const valueToStore = newValue instanceof Function ? newValue(storage.get<T>(key) ?? initialValue) : newValue;
+      const valueToStore =
+        newValue instanceof Function ? newValue(storage.get<T>(key) ?? initialValue) : newValue;
       storage.set(key, valueToStore);
     },
     [key, initialValue]
@@ -41,17 +42,3 @@ export function useLocalStorage<T>(
 
   return [value, set, remove];
 }
-
-// useEffect(() => {
-//   localStorage.setItem("products", JSON.stringify(products));
-// }, [products]);
-// useEffect(() => {
-//   localStorage.setItem("coupons", JSON.stringify(coupons));
-// }, [coupons]);
-// useEffect(() => {
-//   if (cart.length > 0) {
-//     localStorage.setItem("cart", JSON.stringify(cart));
-//   } else {
-//     localStorage.removeItem("cart");
-//   }
-// }, [cart]);

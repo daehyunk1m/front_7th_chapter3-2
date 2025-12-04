@@ -7,9 +7,9 @@
 //
 
 import { Product } from "../../types";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useLocalStorage } from "../utils/hooks/useLocalStorage";
 import { toast } from "../utils/toast";
-import { storage } from "../utils/storage";
 
 export interface ProductWithUI extends Product {
   description?: string;
@@ -17,13 +17,18 @@ export interface ProductWithUI extends Product {
 }
 
 export const useProducts = () => {
-  /**상품 배열 */
   // 이러면 의존성이 섞여 있는 것 아닌가??
-  // const [products, setProducts] = useLocalStorage("products", initialProducts);
-  const [products, setProducts] = useState<ProductWithUI[]>(() => {
-    const saved = storage.get<ProductWithUI[]>("products");
-    return saved ? saved : initialProducts;
-  });
+  const [productsLocalStorage, setProductsLocalStorage] = useLocalStorage(
+    "products",
+    initialProducts
+  );
+
+  /**상품 배열 */
+  const [products, setProducts] = useState<ProductWithUI[]>(productsLocalStorage);
+
+  useEffect(() => {
+    setProductsLocalStorage(products);
+  }, [products]);
 
   /**상품 정보 수정 */
   const updateProduct = useCallback((productId: string, updates: Partial<ProductWithUI>) => {

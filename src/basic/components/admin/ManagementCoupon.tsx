@@ -7,10 +7,14 @@ export const ManagementCoupon = ({
   coupons,
   addCoupon,
   deleteCoupon,
-}: {
+}: // selectedCoupon,
+// setSelectedCoupon,
+{
   coupons: Coupon[];
   addCoupon: (newCoupon: Omit<Coupon, "id">) => void;
   deleteCoupon: (couponCode: string) => void;
+  // selectedCoupon: Coupon | null;
+  // setSelectedCoupon: (coupon: Coupon | null) => void;
 }) => {
   const [show, setShow] = useState(false);
 
@@ -29,7 +33,13 @@ export const ManagementCoupon = ({
         <h2 className='text-lg font-semibold'>쿠폰 관리</h2>
       </div>
       <div className='p-6'>
-        <CouponList coupons={coupons} deleteCoupon={deleteCoupon} setShow={setShow} />
+        <CouponList
+          coupons={coupons}
+          deleteCoupon={deleteCoupon}
+          setShow={setShow}
+          // selectedCoupon={selectedCoupon}
+          // setSelectedCoupon={setSelectedCoupon}
+        />
         {show && (
           <CouponForm
             form={couponForm}

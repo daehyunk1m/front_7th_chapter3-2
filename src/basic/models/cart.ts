@@ -1,4 +1,5 @@
 import { CartItem, Coupon, Product } from "../../types";
+import { toast } from "../utils/toast";
 // TODO: 장바구니 비즈니스 로직 (순수 함수)
 // 힌트: 모든 함수는 순수 함수로 구현 (부작용 없음, 같은 입력에 항상 같은 출력)
 //
@@ -78,22 +79,36 @@ export const calculateCartTotal = (
 };
 
 /**수량 변경*/
-export const updateCartItemQuantity = () => {
-  const newQuantity = 9;
-  // origin에서 참고할 로직:
-  // - newQuantity <= 0 이면 제거
-  // - maxStock 초과하면 에러 (하지만 순수함수니까 validation 결과만 리턴)
-  // - 아니면 수량 업데이트
-  return Number();
+export const updateCartItemQuantity = (
+  cart: CartItem[],
+  productId: string,
+  quantity: number
+): CartItem[] => {
+  if (quantity <= 0) {
+    return removeItemFromCart(cart, productId);
+  }
+
+  return cart.map((item) => (item.product.id === productId ? { ...item, quantity } : item));
 };
 
 /**상품 추가 */
 export const addItemToCart = (cart: CartItem[], product: Product) => {
-  // origin에서 참고할 로직:
-  // - 이미 있으면 quantity + 1
-  // - 없으면 새로 추가
-  // - stock 체크는 호출하는 쪽에서 (순수함수라서)
-  return cart;
+  const existingItem = cart.find((item) => item.product.id === product.id);
+
+  if (existingItem) {
+    const newQuantity = existingItem.quantity + 1;
+
+    if (newQuantity > product.stock) {
+      toast.error(`재고는 ${product.stock}개까지만 있습니다.`);
+      return cart;
+    }
+
+    return cart.map((item) =>
+      item.product.id === product.id ? { ...item, quantity: newQuantity } : item
+    );
+  }
+
+  return [...cart, { product, quantity: 1 }];
 };
 
 /**상품 제거 */

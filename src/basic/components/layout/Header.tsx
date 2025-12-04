@@ -1,17 +1,14 @@
-import { useEffect, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { CartItem } from "../../../types";
 import { CartIcon } from "../icons";
-import { SearchBox } from "../search";
 
 interface HeaderProps {
   isAdmin: boolean;
   setIsAdmin: (value: boolean) => void;
-  searchTerm: string;
-  setSearchTerm: (value: string) => void;
   cart: CartItem[];
 }
 
-export const Header = ({ isAdmin, searchTerm, setSearchTerm, setIsAdmin, cart }: HeaderProps) => {
+export const Header = ({ isAdmin, setIsAdmin, cart, children }: PropsWithChildren<HeaderProps>) => {
   const [totalItemCount, setTotalItemCount] = useState(0);
 
   useEffect(() => {
@@ -25,8 +22,7 @@ export const Header = ({ isAdmin, searchTerm, setSearchTerm, setIsAdmin, cart }:
         <div className='flex justify-between items-center h-16'>
           <div className='flex items-center flex-1'>
             <h1 className='text-xl font-semibold text-gray-800'>SHOP</h1>
-            {/* 검색창 - 안티패턴: 검색 로직이 컴포넌트에 직접 포함 */}
-            {!isAdmin && <SearchBox searchTerm={searchTerm} setSearchTerm={setSearchTerm} />}
+            {!isAdmin && children}
           </div>
           <nav className='flex items-center space-x-4'>
             <button
@@ -40,7 +36,6 @@ export const Header = ({ isAdmin, searchTerm, setSearchTerm, setIsAdmin, cart }:
             {!isAdmin && (
               <div className='relative'>
                 <CartIcon className='w-6 h-6 text-gray-700' />
-
                 {cart.length > 0 && (
                   <span className='absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center'>
                     {totalItemCount}

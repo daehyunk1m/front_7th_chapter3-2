@@ -4,9 +4,13 @@ import { TrashIcon } from "../icons";
 export const CouponContainer = ({
   coupon,
   deleteCoupon,
-}: {
+}: // selectedCoupon,
+// setSelectedCoupon,
+{
   coupon: Coupon;
   deleteCoupon: (couponCode: string) => void;
+  // selectedCoupon: Coupon | null;
+  // setSelectedCoupon: (coupon: Coupon | null) => void;
 }) => {
   return (
     <div className='relative bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-4 border border-indigo-200'>

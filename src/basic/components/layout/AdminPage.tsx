@@ -23,6 +23,8 @@ interface AdminPageProps {
   deleteProduct: (productId: string) => void;
   addCoupon: (newCoupon: Omit<Coupon, "id">) => void;
   deleteCoupon: (couponCode: string) => void;
+  // selectedCoupon: Coupon | null;
+  // setSelectedCoupon: (coupon: Coupon | null) => void;
 }
 
 export function AdminPage({
@@ -33,7 +35,9 @@ export function AdminPage({
   coupons,
   addCoupon,
   deleteCoupon,
-}: AdminPageProps) {
+}: // selectedCoupon,
+// setSelectedCoupon,
+AdminPageProps) {
   const [activeTab, setActiveTab] = useState<"products" | "coupons">("products");
 
   return (
@@ -47,7 +51,13 @@ export function AdminPage({
           deleteProduct={deleteProduct}
         />
       ) : (
-        <ManagementCoupon coupons={coupons} addCoupon={addCoupon} deleteCoupon={deleteCoupon} />
+        <ManagementCoupon
+          coupons={coupons}
+          addCoupon={addCoupon}
+          deleteCoupon={deleteCoupon}
+          // selectedCoupon={selectedCoupon}
+          // setSelectedCoupon={setSelectedCoupon}
+        />
       )}
     </div>
   );

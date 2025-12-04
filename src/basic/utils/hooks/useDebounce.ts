@@ -8,16 +8,16 @@
 
 import { useEffect, useState } from "react";
 
-export function useDebounce<T>(value: T, delay: number): T {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+export function useDebounce<T>(value: T, delay: number = 500): [T, (value: T) => void] {
+  const [searchTerm, setSearchTerm] = useState<T>(value);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<T>(value);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
-    }, 500);
+    }, delay);
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  return {};
+  return [debouncedSearchTerm, setSearchTerm];
 }

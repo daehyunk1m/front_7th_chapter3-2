@@ -8,37 +8,21 @@
 // - addCoupon: 새 쿠폰 추가
 // - removeCoupon: 쿠폰 삭제
 
-import { useCallback, useState } from "react";
-import { Coupon } from "../../types";
+import { useCallback, useEffect, useState } from "react";
+import { useLocalStorage } from "../utils/hooks/useLocalStorage";
 import { toast } from "../utils/toast";
+import type { Coupon } from "../../types";
 
-const initialCoupons: Coupon[] = [
-  {
-    name: "5000원 할인",
-    code: "AMOUNT5000",
-    discountType: "amount",
-    discountValue: 5000,
-  },
-  {
-    name: "10% 할인",
-    code: "PERCENT10",
-    discountType: "percentage",
-    discountValue: 10,
-  },
-];
+export function useCoupons(
+  selectedCoupon: Coupon | null,
+  setSelectedCoupon: (coupon: Coupon | null) => void
+) {
+  const [couponsLocalStorage, setCouponsLocalStorage] = useLocalStorage("coupons", initialCoupons);
+  const [coupons, setCoupons] = useState<Coupon[]>(couponsLocalStorage);
 
-export function useCoupons() {
-  const [coupons, setCoupons] = useState<Coupon[]>(() => {
-    const saved = localStorage.getItem("coupons");
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        return initialCoupons;
-      }
-    }
-    return initialCoupons;
-  });
+  useEffect(() => {
+    setCouponsLocalStorage(coupons);
+  }, [coupons]);
 
   const addCoupon = useCallback(
     (newCoupon: Coupon) => {
@@ -61,7 +45,7 @@ export function useCoupons() {
       }
       toast.success("쿠폰이 삭제되었습니다.");
     },
-    [selectedCoupon]
+    [selectedCoupon, setSelectedCoupon]
   );
 
   return {
@@ -70,3 +54,18 @@ export function useCoupons() {
     deleteCoupon,
   };
 }
+
+const initialCoupons: Coupon[] = [
+  {
+    name: "5000원 할인",
+    code: "AMOUNT5000",
+    discountType: "amount",
+    discountValue: 5000,
+  },
+  {
+    name: "10% 할인",
+    code: "PERCENT10",
+    discountType: "percentage",
+    discountValue: 10,
+  },
+];

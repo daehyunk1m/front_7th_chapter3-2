@@ -1,9 +1,9 @@
-interface SearchBoxProps {
+interface SearchBarProps {
   searchTerm: string;
   setSearchTerm: (value: string) => void;
 }
 
-export const SearchBox = ({ searchTerm, setSearchTerm }: SearchBoxProps) => {
+export const SearchBar = ({ searchTerm, setSearchTerm }: SearchBarProps) => {
   return (
     <div className='ml-8 flex-1 max-w-md'>
       <input

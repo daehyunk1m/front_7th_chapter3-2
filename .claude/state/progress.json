@@ -1,7 +1,7 @@
 {
   "project": "React 쇼핑몰 리팩토링",
   "startedAt": "2025-12-02T00:00:00Z",
-  "currentPhase": 1,
+  "currentPhase": 2,
   "phases": [
     {
       "id": 0,
@@ -12,23 +12,24 @@
     {
       "id": 1,
       "name": "기본과제 (basic)",
-      "status": "in-progress",
+      "status": "completed",
       "startedAt": "2025-12-02T00:00:00Z",
+      "completedAt": "2025-12-05T00:15:00Z",
       "tasks": {
         "total": 11,
-        "completed": 4,
+        "completed": 11,
         "details": [
           { "name": "폴더 구조 scaffolding", "status": "completed" },
           { "name": "storage.ts Pub/Sub 유틸리티", "status": "completed" },
           { "name": "toast.ts Pub/Sub 시스템", "status": "completed" },
-          { "name": "useLocalStorage 훅 (타입 수정)", "status": "completed" },
-          { "name": "useProducts 훅 연결", "status": "in-progress" },
-          { "name": "useCoupons 훅 연결", "status": "pending" },
-          { "name": "useCart 훅 연결", "status": "pending" },
-          { "name": "cart.ts 순수 함수 완성", "status": "pending" },
-          { "name": "컴포넌트 props 연결", "status": "pending" },
-          { "name": "AdminPage 컴포넌트 분리", "status": "in-progress" },
-          { "name": "테스트 통과", "status": "pending" }
+          { "name": "useLocalStorage 훅 (빈 배열 자동 삭제)", "status": "completed" },
+          { "name": "useProducts 훅 (localStorage 통합)", "status": "completed" },
+          { "name": "useCoupons 훅 (localStorage 통합)", "status": "completed" },
+          { "name": "useCart 훅 (localStorage 통합)", "status": "completed" },
+          { "name": "cart.ts 순수 함수 완성", "status": "completed" },
+          { "name": "useDebounce 훅 개선", "status": "completed" },
+          { "name": "컴포넌트 계층 구조 분리", "status": "completed" },
+          { "name": "테스트 통과 (21/21)", "status": "completed" }
         ]
       }
     },
@@ -38,5 +39,5 @@
       "status": "pending"
     }
   ],
-  "lastUpdated": "2025-12-04T00:00:00Z"
+  "lastUpdated": "2025-12-05T00:15:00Z"
 }

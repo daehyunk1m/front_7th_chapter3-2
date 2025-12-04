@@ -24,7 +24,7 @@ export const ProductList = ({
       }
       return formatPrice(price, "₩");
     },
-    [filteredProducts]
+    [filteredProducts, remainingStock]
   );
 
   return (

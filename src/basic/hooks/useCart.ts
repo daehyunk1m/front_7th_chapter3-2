@@ -7,7 +7,7 @@
 // 5. 재고 확인
 //
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   addItemToCart,
   removeItemFromCart,
@@ -22,19 +22,7 @@ import { toast } from "../utils/toast";
 import { useLocalStorage } from "../utils/hooks/useLocalStorage";
 
 export const useCart = () => {
-  const [cartLocalStorage, setCartLocalStorage, removeCartLocalStorage] = useLocalStorage(
-    "cart",
-    initialCart
-  );
-  const [cart, setCart] = useState<CartItem[]>(cartLocalStorage);
-
-  useEffect(() => {
-    if (cart.length > 0) {
-      setCartLocalStorage(cart);
-    } else {
-      removeCartLocalStorage();
-    }
-  }, [cart]);
+  const [cart, setCart, removeCart] = useLocalStorage<CartItem[]>("cart", initialCart);
 
   // 이게 여기 있어야만 하는지????
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
@@ -51,7 +39,7 @@ export const useCart = () => {
 
       toast.success("장바구니에 담았습니다");
     },
-    [cart, getRemainingStock]
+    [cart, setCart]
   );
   const remainingStock = useCallback(
     (product: ProductWithUI) => getRemainingStock(product, cart),
@@ -60,7 +48,7 @@ export const useCart = () => {
 
   const removeFromCart = useCallback((productId: string) => {
     setCart((prevCart) => removeItemFromCart(prevCart, productId));
-  }, []);
+  }, [setCart]);
 
   const applyCoupon = useCallback(
     (coupon: Coupon) => {
@@ -90,7 +78,7 @@ export const useCart = () => {
 
       setCart((prevCart) => updateCartItemQuantity(prevCart, productId, newQuantity));
     },
-    [cart, removeFromCart]
+    [cart, setCart]
   );
 
   const totals = useMemo(() => {
@@ -109,12 +97,12 @@ export const useCart = () => {
     toast.success(`주문이 완료되었습니다. 주문번호: ${orderNumber}`);
     setCart(initialCart);
     setSelectedCoupon(null);
-  }, []);
+  }, [setCart]);
 
   const clearCart = useCallback(() => {
     setCart(initialCart);
-    removeCartLocalStorage();
-  }, []);
+    removeCart();
+  }, [setCart, removeCart]);
 
   return {
     cart,

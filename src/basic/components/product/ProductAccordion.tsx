@@ -10,12 +10,14 @@ export const ProductAccordion = ({
   setEditingProduct,
   setProductForm,
   setShow,
+  remainingStock,
 }: {
   products: ProductWithUI[];
   deleteProduct: (productId: string) => void;
   setEditingProduct: (productId: string) => void;
   setProductForm: (productForm: Omit<ProductWithUI, "id">) => void;
   setShow: (show: boolean) => void;
+  remainingStock: (product: ProductWithUI) => number;
 }) => {
   const handleEditProduct = (product: ProductWithUI) => {
     setEditingProduct(product.id);
@@ -33,13 +35,14 @@ export const ProductAccordion = ({
     (price: number, productId?: string) => {
       if (productId) {
         const product = products.find((p) => p.id === productId);
-        // if (product && getRemainingStock(product) <= 0) {
-        //   return "SOLD OUT";
-        // }
+        if (product && remainingStock(product) <= 0) {
+          return "SOLD OUT";
+        }
       }
-      return formatPrice(price, "₩");
+      // return formatPrice(price, "₩");
+      return formatPrice(price);
     },
-    [products]
+    [products, remainingStock]
   );
 
   return (

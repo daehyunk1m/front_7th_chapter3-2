@@ -25,6 +25,7 @@ interface AdminPageProps {
   deleteCoupon: (couponCode: string) => void;
   // selectedCoupon: Coupon | null;
   // setSelectedCoupon: (coupon: Coupon | null) => void;
+  remainingStock: (product: ProductWithUI) => number;
 }
 
 export function AdminPage({
@@ -35,6 +36,7 @@ export function AdminPage({
   coupons,
   addCoupon,
   deleteCoupon,
+  remainingStock,
 }: // selectedCoupon,
 // setSelectedCoupon,
 AdminPageProps) {
@@ -49,6 +51,7 @@ AdminPageProps) {
           addProduct={addProduct}
           updateProduct={updateProduct}
           deleteProduct={deleteProduct}
+          remainingStock={remainingStock}
         />
       ) : (
         <ManagementCoupon

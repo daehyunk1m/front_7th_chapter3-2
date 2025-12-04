@@ -31,6 +31,13 @@ export function useLocalStorage<T>(
     (newValue: T | ((val: T) => T)) => {
       const valueToStore =
         newValue instanceof Function ? newValue(storage.get<T>(key) ?? initialValue) : newValue;
+
+      // 빈 배열이나 undefined는 삭제
+      if (valueToStore === undefined || (Array.isArray(valueToStore) && valueToStore.length === 0)) {
+        storage.remove(key);
+        return;
+      }
+
       storage.set(key, valueToStore);
     },
     [key, initialValue]

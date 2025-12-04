@@ -10,7 +10,7 @@ import { SearchBar } from "./components/search";
 
 const App = () => {
   const [isAdmin, setIsAdmin] = useState(false);
-  const [searchTerm, setSearchTerm] = useDebounce("");
+  const [searchTerm, debouncedSearchTerm, setSearchTerm] = useDebounce("");
 
   const { products, addProduct, updateProduct, deleteProduct } = useProducts();
   const {
@@ -40,6 +40,7 @@ const App = () => {
             addProduct={addProduct}
             updateProduct={updateProduct}
             deleteProduct={deleteProduct}
+            remainingStock={remainingStock}
             // selectedCoupon={selectedCoupon}
             // setSelectedCoupon={setSelectedCoupon}
             coupons={coupons}
@@ -58,7 +59,7 @@ const App = () => {
             updateQuantity={updateQuantity}
             totals={totals}
             completeOrder={completeOrder}
-            searchTerm={searchTerm}
+            searchTerm={debouncedSearchTerm}
             products={products}
             addToCart={addToCart}
             remainingStock={remainingStock}

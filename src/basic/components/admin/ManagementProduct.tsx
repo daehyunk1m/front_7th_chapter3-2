@@ -7,11 +7,13 @@ export const ManagementProduct = ({
   addProduct,
   updateProduct,
   deleteProduct,
+  remainingStock,
 }: {
   products: ProductWithUI[];
   addProduct: (newProduct: Omit<ProductWithUI, "id">) => void;
   updateProduct: (productId: string, updates: Partial<ProductWithUI>) => void;
   deleteProduct: (productId: string) => void;
+  remainingStock: (product: ProductWithUI) => number;
 }) => {
   const [show, setShow] = useState(false);
 
@@ -66,6 +68,7 @@ export const ManagementProduct = ({
         setEditingProduct={setEditingProduct}
         setProductForm={setProductForm}
         setShow={setShow}
+        remainingStock={remainingStock}
       />
       {show && (
         <ProductForm

@@ -7,7 +7,7 @@
 //
 
 import { Product } from "../../types";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { useLocalStorage } from "../utils/hooks/useLocalStorage";
 import { toast } from "../utils/toast";
 
@@ -17,18 +17,7 @@ export interface ProductWithUI extends Product {
 }
 
 export const useProducts = () => {
-  // 이러면 의존성이 섞여 있는 것 아닌가??
-  const [productsLocalStorage, setProductsLocalStorage] = useLocalStorage(
-    "products",
-    initialProducts
-  );
-
-  /**상품 배열 */
-  const [products, setProducts] = useState<ProductWithUI[]>(productsLocalStorage);
-
-  useEffect(() => {
-    setProductsLocalStorage(products);
-  }, [products]);
+  const [products, setProducts] = useLocalStorage<ProductWithUI[]>("products", initialProducts);
 
   /**상품 정보 수정 */
   const updateProduct = useCallback((productId: string, updates: Partial<ProductWithUI>) => {
@@ -36,7 +25,7 @@ export const useProducts = () => {
       prev.map((product) => (product.id === productId ? { ...product, ...updates } : product))
     );
     toast.success("상품이 수정되었습니다.");
-  }, []);
+  }, [setProducts]);
 
   /**새 상품 추가 */
   const addProduct = useCallback((newProduct: Omit<ProductWithUI, "id">) => {
@@ -46,7 +35,7 @@ export const useProducts = () => {
     };
     setProducts((prev) => [...prev, product]);
     toast.success("상품이 추가되었습니다.");
-  }, []);
+  }, [setProducts]);
 
   /**재고 수정 */
   const updateProductStock = () => {
@@ -56,7 +45,7 @@ export const useProducts = () => {
   const deleteProduct = useCallback((productId: string) => {
     setProducts((prev) => prev.filter((p) => p.id !== productId));
     toast.success("상품이 삭제되었습니다.");
-  }, []);
+  }, [setProducts]);
 
   /**할인 규칙 추가 */
   const addProductDiscount = () => {
